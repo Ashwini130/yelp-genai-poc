@@ -15,3 +15,6 @@ The POC is designed for **local, lightweight experimentation** It progressively 
 - Gain hands-on skills in embeddings, vector databases, and orchestration.  
 
 ---
+
+Dataset : https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset
+
