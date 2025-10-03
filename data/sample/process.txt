@@ -1,0 +1,30 @@
+from pyspark.sql import functions as f 
+df = spark.read.json('yelp_academic_dataset_review.json') 
+cleaned_df= df.select('business_id','user_id','text','stars','date') \
+.na.drop(subset=['text']) \
+.withColumn('cleaned_text',f.regexp_replace(f.col('text'), r'http\S+|www\S+|https\S+', '')) \
+.withColumn('cleaned_text',f.regexp_replace(f.col('cleaned_text'), r'\S+@\S+','')) \
+.withColumn('length', f.length(f.col('cleaned_text'))) \
+.withColumn('date',f.substring(f.col("date"), 0, 10)) \
+.filter(f.col('length') > 5).drop("length")
+>>> cleaned_df.count()
+6989958                                                                         
+>>> df.count()
+6990280                                                                         
+>>> cleaned_df.printSchema()
+root
+ |-- business_id: string (nullable = true)
+ |-- user_id: string (nullable = true)
+ |-- text: string (nullable = true)
+ |-- stars: double (nullable = true)
+ |-- date: string (nullable = true)
+ |-- cleaned_text: string (nullable = true)
+ |-- length: integer (nullable = true)
+
+
+>>> cleaned_df.withColumn('date',f.substring(f.col("date"), 0, 10)).filter(f.col('date')>'2021-10-01').write.option('header','true').mode('overwrite').csv('sampled_reviews')           
+
+df1 = spark.read.option('header','true').csv('sampled_reviews')
+df2 = spark.read.json('yelp_academic_dataset_business.json').select('business_id','name').withColumnRenamed('name','business_name')
+
+df1.join(df2,df1['business_id']==df2['business_id'],'left').show(10,False)
