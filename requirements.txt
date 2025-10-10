@@ -2,6 +2,8 @@
 pandas==2.2.2
 numpy==1.26.4
 scikit-learn==1.5.1
+matplotlib~=3.6.0
+seaborn==0.12.2
 
 # Database
 sqlite-utils==3.36
@@ -17,3 +19,5 @@ vaderSentiment==3.3.2
 # LLM Orchestration
 langchain==0.2.12
 langchain-community
+
+openai
